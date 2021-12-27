@@ -29,7 +29,7 @@ class TestControllerTest {
         mockMvc.perform(get("/test"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Test Success")));
+                .andExpect(content().string(containsString("Test Successaaaa")));
     }
 
     @DisplayName("testWithPath Test")
