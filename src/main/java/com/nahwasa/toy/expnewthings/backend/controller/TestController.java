@@ -12,7 +12,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class TestController {
 
     @GetMapping
-    public String testRoot() {
+    public String test() {
         return "Test Success";
     }
 
