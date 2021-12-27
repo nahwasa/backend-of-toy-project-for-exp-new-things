@@ -35,13 +35,4 @@ public class TodoService {
             throw new RuntimeException("Unknown user.");
         }
     }
-
-    public String testService() {
-        TodoEntity entity = new TodoEntity();
-        entity.setTitle("study junit");
-        repository.save(entity);
-
-        TodoEntity savedEntity = repository.getById(entity.getId());
-        return savedEntity.getId() + ", " + savedEntity.getTitle();
-    }
 }
