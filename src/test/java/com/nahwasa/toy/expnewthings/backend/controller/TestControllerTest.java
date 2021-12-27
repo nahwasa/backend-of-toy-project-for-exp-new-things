@@ -34,7 +34,7 @@ class TestControllerTest {
 
     @DisplayName("testWithPath Test")
     @Test
-    public void shouldTestWithPathReturnMessageIncludeingPathVariable() throws Exception {
+    public void shouldTestWithPathReturnMessageIncludingPathVariable() throws Exception {
         String testVar = "testVar!!";
         mockMvc.perform(get("/test/path/{var}/end", testVar))
                 .andDo(print())
