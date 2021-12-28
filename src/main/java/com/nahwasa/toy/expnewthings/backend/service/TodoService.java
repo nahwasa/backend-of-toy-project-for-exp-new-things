@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,11 +22,26 @@ public class TodoService {
         repository.save(entity);
         log.info("Entity Id : {} is saved.", entity.getId());
 
-        return repository.findByUserId(entity.getUserId());
+        return retrieve(entity.getUserId());
     }
 
     public List<TodoEntity> retrieve(final String userId) {
         return repository.findByUserId(userId);
+    }
+
+    public List<TodoEntity> update(final TodoEntity entity) {
+        validate(entity);
+
+        final Optional<TodoEntity> original = repository.findById(entity.getId());
+        if (original.isPresent()) {
+            final TodoEntity todo = original.get();
+            todo.setTitle(entity.getTitle());
+            todo.setDone(entity.isDone());
+
+            repository.save(todo);
+            log.info("Entity Id : {} is updated.", entity.getId());
+        }
+        return retrieve(entity.getUserId());
     }
 
     private void validate(final TodoEntity entity) {
@@ -39,4 +55,6 @@ public class TodoService {
             throw new RuntimeException("Unknown user.");
         }
     }
+
+
 }
