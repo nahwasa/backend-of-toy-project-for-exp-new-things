@@ -4,6 +4,7 @@ import com.nahwasa.toy.expnewthings.backend.dto.ResponseDTO;
 import com.nahwasa.toy.expnewthings.backend.dto.TodoDTO;
 import com.nahwasa.toy.expnewthings.backend.model.TodoEntity;
 import com.nahwasa.toy.expnewthings.backend.service.TodoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import javax.persistence.Entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("todo")
 public class TodoController {
@@ -22,6 +24,8 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> createTodo(@RequestBody TodoDTO dto) {
+        log.info("createTodo called. param: " + dto.toString());
+
         try {
             TodoEntity entity = TodoDTO.toEntity(dto);
             entity.setId(null);
@@ -43,6 +47,8 @@ public class TodoController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> retrieveTodoList() {
+        log.info("retrieveTodoList called.");
+
         List<TodoEntity> entities = service.retrieve(TEMP_USER_ID);
         List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
 
@@ -54,6 +60,8 @@ public class TodoController {
 
     @PutMapping
     public ResponseEntity<ResponseDTO> updateTodo(@RequestBody TodoDTO dto) {
+        log.info("updateTodo called. param: " + dto.toString());
+
         TodoEntity entity = TodoDTO.toEntity(dto);
         entity.setUserId(TEMP_USER_ID);
 
@@ -63,6 +71,20 @@ public class TodoController {
         ResponseDTO<TodoDTO> responseDTO = new ResponseDTO<>();
         responseDTO.setData(dtos);
 
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ResponseDTO> deleteTodo(@RequestBody TodoDTO dto) {
+        log.info("deleteTodo called. param: " + dto.toString());
+
+        TodoEntity entity = TodoDTO.toEntity(dto);
+        entity.setUserId(TEMP_USER_ID);
+
+        List<TodoEntity> entities = service.delete(entity);
+        List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
+
+        ResponseDTO<TodoDTO> responseDTO = ResponseDTO.<TodoDTO>builder().data(dtos).build();
         return ResponseEntity.ok().body(responseDTO);
     }
 
