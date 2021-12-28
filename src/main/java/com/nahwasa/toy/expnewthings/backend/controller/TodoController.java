@@ -14,15 +14,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("todo")
 public class TodoController {
+    private static final String TEMP_USER_ID = "temporary-user";    // use until set spring security
+
     @Autowired
     TodoService service;
 
     @PostMapping
-    public ResponseEntity<?> createTodo(@RequestBody TodoDTO dto) {
+    public ResponseEntity<ResponseDTO> createTodo(@RequestBody TodoDTO dto) {
         try {
             TodoEntity entity = TodoDTO.toEntity(dto);
             entity.setId(null);
-            entity.setUserId("temporary-user");
+            entity.setUserId(TEMP_USER_ID);
             List<TodoEntity> entities = service.create(entity);
 
             List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
@@ -35,5 +37,16 @@ public class TodoController {
             response.setError(e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseDTO> retrieveTodoList() {
+        List<TodoEntity> entities = service.retrieve(TEMP_USER_ID);
+        List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+
+        ResponseDTO<TodoDTO> responseDTO = new ResponseDTO<>();
+        responseDTO.setData(dtos);
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

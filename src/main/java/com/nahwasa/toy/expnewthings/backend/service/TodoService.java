@@ -24,6 +24,10 @@ public class TodoService {
         return repository.findByUserId(entity.getUserId());
     }
 
+    public List<TodoEntity> retrieve(final String userId) {
+        return repository.findByUserId(userId);
+    }
+
     private void validate(final TodoEntity entity) {
         if (entity == null) {
             log.warn("Entity cannot be null.");
@@ -34,14 +38,5 @@ public class TodoService {
             log.warn("Unknown user.");
             throw new RuntimeException("Unknown user.");
         }
-    }
-
-    public String testService() {
-        TodoEntity entity = new TodoEntity();
-        entity.setTitle("study junit");
-        repository.save(entity);
-
-        TodoEntity savedEntity = repository.getById(entity.getId());
-        return savedEntity.getId() + ", " + savedEntity.getTitle();
     }
 }
