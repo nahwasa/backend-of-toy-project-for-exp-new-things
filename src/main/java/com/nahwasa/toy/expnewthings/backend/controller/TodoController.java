@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,9 +26,10 @@ public class TodoController {
             TodoEntity entity = TodoDTO.toEntity(dto);
             entity.setId(null);
             entity.setUserId(TEMP_USER_ID);
+            entity.setDone(false);
             List<TodoEntity> entities = service.create(entity);
 
-            List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+            List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
             ResponseDTO<TodoDTO> response = new ResponseDTO<>();
             response.setData(dtos);
 
@@ -42,11 +44,29 @@ public class TodoController {
     @GetMapping
     public ResponseEntity<ResponseDTO> retrieveTodoList() {
         List<TodoEntity> entities = service.retrieve(TEMP_USER_ID);
-        List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+        List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
 
         ResponseDTO<TodoDTO> responseDTO = new ResponseDTO<>();
         responseDTO.setData(dtos);
 
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping
+    public ResponseEntity<ResponseDTO> updateTodo(@RequestBody TodoDTO dto) {
+        TodoEntity entity = TodoDTO.toEntity(dto);
+        entity.setUserId(TEMP_USER_ID);
+
+        List<TodoEntity> entities = service.update(entity);
+        List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
+
+        ResponseDTO<TodoDTO> responseDTO = new ResponseDTO<>();
+        responseDTO.setData(dtos);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    private List<TodoDTO> convertToDtoListFromEntityList(List<TodoEntity> from) {
+        return from.stream().map(TodoDTO::new).collect(Collectors.toList());
     }
 }
