@@ -17,10 +17,25 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("todo")
 public class TodoController {
-    private static final String TEMP_USER_ID = "temporary-user";    // use until set spring security
+    private static final String TEMP_USER_ID    = "temporary-user";    // use until set spring security
+    private static final int DUMMY_DATA_LENGTH  = 5;
 
     @Autowired
     TodoService service;
+
+    @PostMapping("/init-dummy-data")
+    public void initDummyData() {
+        for (int i = 1; i <= DUMMY_DATA_LENGTH; i++) {
+            TodoEntity cur = TodoEntity.builder()
+                    .title("Dummy " + i)
+                    .userId(TEMP_USER_ID)
+                    .done(false)
+                    .id(null)
+                    .build();
+
+            service.create(cur);
+        }
+    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO> createTodo(@RequestBody TodoDTO dto) {
