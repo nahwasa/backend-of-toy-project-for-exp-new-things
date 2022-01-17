@@ -33,9 +33,7 @@ public class TestController {
     @GetMapping("/sendMail")
     public ResponseEntity<String> sendMail() {
         ArrayList<String> mailList = new ArrayList<>();
-        mailList.add("nahwasa@entropykorea.com");
-        mailList.add("jungwooshim@entropykorea.com");
-        mailList.add("hjpark@entropykorea.com");
+        mailList.add("nahwasa@google.com");
 
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo((String[]) mailList.toArray(new String[mailList.size()]));
