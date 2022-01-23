@@ -65,6 +65,23 @@ public class TodoController {
         log.info("retrieveTodoList called.");
 
         List<TodoEntity> entities = service.retrieve(TEMP_USER_ID);
+
+        if (entities.size() == 0) {
+            TodoEntity tmp = new TodoEntity();
+            tmp.setTitle("test");
+            tmp.setUserId("testUser");
+            tmp.setDone(true);
+            tmp.setId("1");
+            entities.add(tmp);
+
+            tmp = new TodoEntity();
+            tmp.setTitle("테스트용 서버임");
+            tmp.setUserId("testUser2");
+            tmp.setDone(false);
+            tmp.setId("2");
+            entities.add(tmp);
+        }
+
         List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
 
         ResponseDTO<TodoDTO> responseDTO = new ResponseDTO<>();

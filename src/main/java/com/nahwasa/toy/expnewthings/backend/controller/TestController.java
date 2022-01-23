@@ -33,6 +33,7 @@ public class TestController {
     @GetMapping("/sendMail")
     public ResponseEntity<String> sendMail() {
         ArrayList<String> mailList = new ArrayList<>();
+
         mailList.add("nahwasa@google.com");
 
         SimpleMailMessage msg = new SimpleMailMessage();
