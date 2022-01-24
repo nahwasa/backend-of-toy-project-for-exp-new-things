@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Entity;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,6 +36,19 @@ public class TodoController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<ResponseDTO> retrieveTodoList() {
+        log.info("retrieveTodoList called.");
+
+        List<TodoEntity> entities = service.retrieve(TEMP_USER_ID);
+        List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
+
+        ResponseDTO<TodoDTO> responseDTO = new ResponseDTO<>();
+        responseDTO.setData(dtos);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PostMapping
     public ResponseEntity<ResponseDTO> createTodo(@RequestBody TodoDTO dto) {
         log.info("createTodo called. param: " + dto.toString());
@@ -58,36 +70,6 @@ public class TodoController {
             response.setError(e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
-    }
-
-    @GetMapping
-    public ResponseEntity<ResponseDTO> retrieveTodoList() {
-        log.info("retrieveTodoList called.");
-
-        List<TodoEntity> entities = service.retrieve(TEMP_USER_ID);
-
-        if (entities.size() == 0) {
-            TodoEntity tmp = new TodoEntity();
-            tmp.setTitle("test");
-            tmp.setUserId("testUser");
-            tmp.setDone(true);
-            tmp.setId("1");
-            entities.add(tmp);
-
-            tmp = new TodoEntity();
-            tmp.setTitle("테스트용 서버임");
-            tmp.setUserId("testUser2");
-            tmp.setDone(false);
-            tmp.setId("2");
-            entities.add(tmp);
-        }
-
-        List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
-
-        ResponseDTO<TodoDTO> responseDTO = new ResponseDTO<>();
-        responseDTO.setData(dtos);
-
-        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PutMapping
