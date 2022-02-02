@@ -24,6 +24,11 @@ public class UserDTO {
         this.username = entity.getUsername();
     }
 
+    public UserDTO(final UserEntity entity, final String token) {
+        this(entity);
+        this.token = token;
+    }
+
     public static UserEntity toEntity(final UserDTO dto) {
         return UserEntity.builder()
                 .id(dto.getId())

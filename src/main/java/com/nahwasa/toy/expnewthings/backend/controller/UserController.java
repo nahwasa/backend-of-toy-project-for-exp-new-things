@@ -3,6 +3,7 @@ package com.nahwasa.toy.expnewthings.backend.controller;
 import com.nahwasa.toy.expnewthings.backend.dto.ResponseDTO;
 import com.nahwasa.toy.expnewthings.backend.dto.UserDTO;
 import com.nahwasa.toy.expnewthings.backend.model.UserEntity;
+import com.nahwasa.toy.expnewthings.backend.security.TokenProvider;
 import com.nahwasa.toy.expnewthings.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
@@ -43,8 +47,8 @@ public class UserController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
 
-        final UserDTO responseUserDTO = new UserDTO(user);
+        final String token = tokenProvider.create(user);
+        final UserDTO responseUserDTO = new UserDTO(user, token);
         return ResponseEntity.ok().body(responseUserDTO);
     }
 }
-
