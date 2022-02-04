@@ -7,7 +7,9 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springdoc.core.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.List;
 public class SwaggerConfig {
     @Bean
     public OpenAPI initOpenApi() {
+        SpringDocUtils.getConfig().addAnnotationsToIgnore(AuthenticationPrincipal.class);
+
         Info info = new Info().title("Toy API").version("1.0.0")
                 .description("Toy Project - Exp New Things")
                 .contact(new Contact().name("nahwasa").url("https://nahwasa.com").email("nahwasa@gmail.com"));
