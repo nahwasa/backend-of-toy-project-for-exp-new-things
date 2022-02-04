@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 log.info("Authenticated user ID : " + userId);
 
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userId,
+                        userId, // 여기 작성한게 Controller에서 '@AuthenticationPrincipal' 부분에 박힘.
                         null,
                         AuthorityUtils.NO_AUTHORITIES
                 );
