@@ -4,7 +4,6 @@ import com.nahwasa.toy.expnewthings.backend.dto.ResponseDTO;
 import com.nahwasa.toy.expnewthings.backend.dto.TodoDTO;
 import com.nahwasa.toy.expnewthings.backend.model.TodoEntity;
 import com.nahwasa.toy.expnewthings.backend.service.TodoService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,34 +11,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RestController
 @RequestMapping("todo")
 public class TodoController {
     private static final String TEMP_USER_ID    = "temporary-user";    // use until set spring security
-    private static final int DUMMY_DATA_LENGTH  = 5;
 
     @Autowired
     TodoService service;
 
-    @PostMapping("/init-dummy-data")
-    public void initDummyData() {
-        for (int i = 1; i <= DUMMY_DATA_LENGTH; i++) {
-            TodoEntity cur = TodoEntity.builder()
-                    .title("Dummy " + i)
-                    .userId(TEMP_USER_ID)
-                    .done(false)
-                    .id(null)
-                    .build();
-
-            service.create(cur);
-        }
-    }
-
     @GetMapping
     public ResponseEntity<ResponseDTO> retrieveTodoList() {
-        log.info("retrieveTodoList called.");
-
         List<TodoEntity> entities = service.retrieve(TEMP_USER_ID);
         List<TodoDTO> dtos = convertToDtoListFromEntityList(entities);
 
@@ -51,8 +32,6 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> createTodo(@RequestBody TodoDTO dto) {
-        log.info("createTodo called. param: " + dto.toString());
-
         try {
             TodoEntity entity = TodoDTO.toEntity(dto);
             entity.setId(null);
@@ -74,8 +53,6 @@ public class TodoController {
 
     @PutMapping
     public ResponseEntity<ResponseDTO> updateTodo(@RequestBody TodoDTO dto) {
-        log.info("updateTodo called. param: " + dto.toString());
-
         TodoEntity entity = TodoDTO.toEntity(dto);
         entity.setUserId(TEMP_USER_ID);
 
@@ -90,8 +67,6 @@ public class TodoController {
 
     @DeleteMapping
     public ResponseEntity<ResponseDTO> deleteTodo(@RequestBody TodoDTO dto) {
-        log.info("deleteTodo called. param: " + dto.toString());
-
         TodoEntity entity = TodoDTO.toEntity(dto);
         entity.setUserId(TEMP_USER_ID);
 
