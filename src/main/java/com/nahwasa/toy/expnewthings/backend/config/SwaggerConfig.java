@@ -7,9 +7,12 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +34,18 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.nahwasa.toy.expnewthings.backend.controller"))
                 .paths(PathSelectors.any())
                 .build()
-                .useDefaultResponseMessages(false);
+                .useDefaultResponseMessages(false)
+                .securitySchemes(securitySchemes());
+    }
+
+    private static ArrayList<SecurityScheme> securitySchemes() {
+        SecurityScheme securityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER).name("Authorization");
+
+        ArrayList<SecurityScheme> res = new ArrayList<>();
+        res.add(securityScheme);
+        return res;
     }
 
     private Set<String> getConsumeContentTypes() {
