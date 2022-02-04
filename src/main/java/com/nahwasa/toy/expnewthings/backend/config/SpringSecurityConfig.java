@@ -32,7 +32,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session 기반 아님을 선언
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/", "/auth/**", "/swagger*/**")
+                        .antMatchers("/", "/auth/**", "/swagger*/**", "/test/**")
                         .permitAll()   // '/'랑 '/auth/**' 경로는 인증 제외
                     .anyRequest()
                         .authenticated();   // 그 외의 모든 경로는 인증 필요
