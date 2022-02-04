@@ -1,63 +1,42 @@
 package com.nahwasa.toy.expnewthings.backend.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-@Configuration
-@EnableWebMvc
+@Component
 public class SwaggerConfig {
-
-    private ApiInfo swaggerInfo() {
-        return new ApiInfoBuilder().title("toy project : exp new things")
-                .description("for API test").build();
-    }
-
     @Bean
-    public Docket swaggerApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .consumes(getConsumeContentTypes())
-                .produces(getProduceContentTypes())
-                .apiInfo(swaggerInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("com.nahwasa.toy.expnewthings.backend.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .useDefaultResponseMessages(false)
-                .securitySchemes(securitySchemes());
-    }
+    public OpenAPI initOpenApi() {
+        Info info = new Info().title("Toy API").version("1.0.0")
+                .description("Toy Project - Exp New Things")
+                .contact(new Contact().name("nahwasa").url("https://nahwasa.com").email("nahwasa@gmail.com"));
 
-    private static ArrayList<SecurityScheme> securitySchemes() {
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
                 .in(SecurityScheme.In.HEADER).name("Authorization");
 
-        ArrayList<SecurityScheme> res = new ArrayList<>();
-        res.add(securityScheme);
-        return res;
-    }
+        List<SecurityRequirement> security = new ArrayList<>();
+        SecurityRequirement schemaRequirement = new SecurityRequirement().addList("bearerAuth");
+        security.add(schemaRequirement);
 
-    private Set<String> getConsumeContentTypes() {
-        Set<String> consumes = new HashSet<>();
-        consumes.add("application/json;charset=UTF-8");
-        consumes.add("application/x-www-form-urlencoded");
-        return consumes;
-    }
+        List<Server> servers = new ArrayList<>();
+        servers.add(new Server().url("http://localhost:8080").description("toy backend"));
 
-    private Set<String> getProduceContentTypes() {
-        Set<String> produces = new HashSet<>();
-        produces.add("application/json;charset=UTF-8");
-        return produces;
+        return new OpenAPI()
+                .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
+                .addSecurityItem(schemaRequirement)
+                .security(security)
+                .info(info)
+                .servers(servers);
     }
 }

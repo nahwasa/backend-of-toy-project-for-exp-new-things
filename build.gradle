@@ -15,18 +15,21 @@ repositories {
 dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.2.0'
+
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    runtimeOnly 'com.h2database:h2'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.5'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+
 }
 
 test {
